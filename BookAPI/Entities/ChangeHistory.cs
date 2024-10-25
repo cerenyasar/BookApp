@@ -2,7 +2,7 @@
 {
     public class ChangeHistory
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public Guid BookId { get; set; }
         public Book Book { get; set; }
 
