@@ -21,17 +21,23 @@ namespace BookAPI.Repositories
 
         public async Task<IEnumerable<Author>> GetAllAuthorsAsync()
         {
-            return await _context.Authors.ToListAsync<Author>();
+            return await _context.Authors.Include(a => a.BookAuthors)
+                                   .ThenInclude(ba => ba.Book)
+                                   .ToListAsync();
         }
 
         public async Task<Author?> GetAuthorByIdAsync(Guid authorId)
         {
-            return await _context.Authors.FindAsync(authorId);
+            return await _context.Authors.Include(a => a.BookAuthors)
+                                   .ThenInclude(ba => ba.Book)
+                                   .FirstOrDefaultAsync(a => a.Id == authorId);
         }
 
-        public Task<Author?> GetAuthorByNameAsync(string name)
+        public async Task<Author?> GetAuthorByNameAsync(string name)
         {
-            return _context.Authors.Where(a => a.Name == name).FirstOrDefaultAsync();
+            return await _context.Authors.Include(a => a.BookAuthors)
+                                   .ThenInclude(ba => ba.Book)
+                                   .FirstOrDefaultAsync(a => a.Name == name);
         }
 
     }

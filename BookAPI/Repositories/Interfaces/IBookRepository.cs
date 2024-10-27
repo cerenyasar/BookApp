@@ -5,7 +5,7 @@ namespace BookAPI.Repositories.Interfaces
     public interface IBookRepository
     {
         Task<Book?> GetBookByIdAsync(Guid bookId);
-        Task<IEnumerable<Book>> GetAllBooksAsync();
+        IQueryable<Book> GetAllBooks();
 
         void Add(Book book);
         void Update(Book book);

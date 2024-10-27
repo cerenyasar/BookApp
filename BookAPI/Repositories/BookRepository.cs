@@ -27,11 +27,10 @@ namespace BookAPI.Repositories
                                    .ThenInclude(ba => ba.Author)
                                    .FirstOrDefaultAsync(b => b.Id == id);
         }
-        public async Task<IEnumerable<Book>> GetAllBooksAsync()
+        public IQueryable<Book> GetAllBooks()
         {
-            return await _dbContext.Books.Include(b => b.BookAuthors)
-                                   .ThenInclude(ba => ba.Author)
-                                   .ToListAsync();
+            return _dbContext.Books.Include(b => b.BookAuthors)
+                                   .ThenInclude(ba => ba.Author);
         }
     }
 }

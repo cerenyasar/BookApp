@@ -1,9 +1,11 @@
+using BookAPI;
 using BookAPI.Database;
 using BookAPI.Repositories;
 using BookAPI.Repositories.Interfaces;
 using BookAPI.Services;
 using BookAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,15 +14,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SchemaFilter<DateOnlySchemaFilter>(); 
+});
 
 //RegisterUnitOfWork and repositories
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IBookRepository,BookRepository>();
 builder.Services.AddScoped<IAuthorRepository,AuthorRepository>();
+builder.Services.AddScoped<IBookAuthorRepository, BookAuthorRepository>();
 
 //Register Services
 builder.Services.AddScoped<IBookService,BookService>();
+builder.Services.AddScoped<IAuthorService,AuthorService>();
 
 //Configure Entity Framework with SQL Server
 builder.Services.AddDbContext<BookDbContext>(options =>

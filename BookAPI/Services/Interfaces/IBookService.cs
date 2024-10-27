@@ -5,7 +5,10 @@ namespace BookAPI.Services.Interfaces
 {
     public interface IBookService
     {
-        Task<IEnumerable<Book>> GetAllBooksAsync();
-        Task<Book> AddBookAsync(BookCreateDto bookCreateDto);
+        Task<IEnumerable<BookResponseDto>> GetAllBooksAsync(BookQueryParameters bookQueryParameters);
+        Task<BookResponseDto> GetBookByIdAsync(Guid id);
+        Task<BookResponseDto> AddBookAsync(BookCreateDto bookCreateDto);
+        Task<BookResponseDto> UpdateBookAsync(Guid id, BookUpdateDto bookUpdateDto);
+        Task DeleteBookAsync(Guid id);
     }
 }

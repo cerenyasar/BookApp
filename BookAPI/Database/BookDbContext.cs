@@ -1,5 +1,7 @@
 ﻿using BookAPI.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BookAPI.Database
 {
@@ -38,6 +40,29 @@ namespace BookAPI.Database
             modelBuilder.Entity<Author>()
                 .HasIndex(a => a.Name)
                 .IsUnique();
+
+            // Configure DateOnly to DateTime conversion for PublishDate
+            modelBuilder.Entity<Book>()
+                .Property(b => b.PublishDate)
+                .HasConversion<DateOnlyConverter, DateOnlyComparer>();
+        }
+
+        public class DateOnlyConverter : ValueConverter<DateOnly, DateTime>
+        {
+            public DateOnlyConverter()
+                : base(
+                    d => d.ToDateTime(TimeOnly.MinValue), // Convert DateOnly to DateTime
+                    d => DateOnly.FromDateTime(d)) // Convert DateTime to DateOnly
+            { }
+        }
+
+        public class DateOnlyComparer : ValueComparer<DateOnly>
+        {
+            public DateOnlyComparer()
+                : base(
+                    (d1, d2) => d1 == d2, // Equality comparison
+                    d => d.GetHashCode()) // Hash code generation
+            { }
         }
     }
 }
