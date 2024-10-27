@@ -9,10 +9,12 @@ namespace BookAPI.Controllers
     public class AuthorController : ControllerBase
     {
         private readonly IAuthorService _authorService;
+        private readonly ILogger<AuthorController> _logger;
 
-        public AuthorController(IAuthorService authorService)
+        public AuthorController(IAuthorService authorService, ILogger<AuthorController> logger)
         {
             _authorService = authorService;
+            _logger = logger;
         }
 
         [HttpGet("{id}")]
@@ -41,8 +43,16 @@ namespace BookAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var createdAuthor = await _authorService.AddAuthorAsync(authorDto);
-            return CreatedAtAction(nameof(GetAuthorById), new { id = createdAuthor.Id }, createdAuthor);
+            try
+            {
+                var createdAuthor = await _authorService.AddAuthorAsync(authorDto);
+                return CreatedAtAction(nameof(GetAuthorById), new { id = createdAuthor.Id }, createdAuthor);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding a new author.");
+                return StatusCode(500, "An internal error occurred. Please try again later.");
+            }
         }
 
         [HttpPut("{id}")]
@@ -66,6 +76,7 @@ namespace BookAPI.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while deleting the author.");
                 return StatusCode(500, new { message = "An error occurred while deleting the author.", error = ex.Message }); 
             }
         }

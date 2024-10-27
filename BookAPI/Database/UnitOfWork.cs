@@ -18,7 +18,6 @@ namespace BookAPI.Database
         public IBookRepository Books { get; private set; }
         public IAuthorRepository Authors { get; private set; }
         public IChangeHistoryRepository ChangeHistories { get; private set; }
-
         public IBookAuthorRepository BookAuthors { get; private set; }
 
         public UnitOfWork(BookDbContext dbContext)
@@ -27,8 +26,8 @@ namespace BookAPI.Database
             Books = new BookRepository(_dbContext);
             Authors = new AuthorRepository(_dbContext); 
             BookAuthors = new BookAuthorRepository(_dbContext);
+            ChangeHistories = new ChangeHistoryRepository(_dbContext);
         }
-
         public async Task CompleteAsync()
         {
             await _dbContext.SaveChangesAsync();
@@ -38,6 +37,5 @@ namespace BookAPI.Database
         {
             _dbContext.Dispose();
         }
-
     }
 }

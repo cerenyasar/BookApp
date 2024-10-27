@@ -5,9 +5,14 @@ using BookAPI.Repositories.Interfaces;
 using BookAPI.Services;
 using BookAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+// Configure logging (optional: configure logging level and providers)
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole(); 
+builder.Logging.AddDebug(); 
 
 // Add services to the container.
 
@@ -16,7 +21,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SchemaFilter<DateOnlySchemaFilter>(); 
+    c.SchemaFilter<DateOnlySchemaFilter>();
 });
 
 //RegisterUnitOfWork and repositories
@@ -24,10 +29,12 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IBookRepository,BookRepository>();
 builder.Services.AddScoped<IAuthorRepository,AuthorRepository>();
 builder.Services.AddScoped<IBookAuthorRepository, BookAuthorRepository>();
+builder.Services.AddScoped<IChangeHistoryRepository, ChangeHistoryRepository>();
 
 //Register Services
 builder.Services.AddScoped<IBookService,BookService>();
 builder.Services.AddScoped<IAuthorService,AuthorService>();
+builder.Services.AddScoped<IChangeHistoryService,ChangeHistoryService>();
 
 //Configure Entity Framework with SQL Server
 builder.Services.AddDbContext<BookDbContext>(options =>
